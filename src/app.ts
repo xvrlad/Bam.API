@@ -1,22 +1,8 @@
-// import express from "express";
-// import config from "config";
-// import logger from "./utils/logger";
-// import routes from "./routes";
-
-// const port = config.get<number>("port");
-
-// const app = express();
-
-// app.listen(port, () => {
-//   logger.info(`App is running at http://localhost:${port}`);
-
-//   routes(app);
-// });
-
 import Fastify from "fastify";
 import userRoutes from "./modules/user/user.route";
 import config from "config";
 import logger from "./utils/logger";
+import { userSchemas } from "./modules/user/user.schema";
 
 const port = config.get<number>("port");
 
@@ -27,6 +13,10 @@ server.get("/healthcheck", async function () {
 });
 
 async function main() {
+  for (const schema of userSchemas) {
+    server.addSchema(schema);
+  }
+
   server.register(userRoutes, { prefix: "api/users" });
 
   try {
