@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { CreateUserInput } from "./user.schema";
 import { createUser } from "./user.service";
@@ -15,7 +16,13 @@ export async function registerUserHandler(
 
     return reply.code(201).send(user);
   } catch (error) {
-    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return reply.code(409).send({
+          meta: error.meta,
+        });
+      }
+    }
     return reply.code(409).send(error);
   }
 }
