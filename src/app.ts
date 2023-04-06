@@ -9,6 +9,12 @@ const port = config.get<number>("port");
 
 export const server = Fastify();
 
+declare module "fastify" {
+  export interface FastifyInstance {
+    authenticate: any;
+  }
+}
+
 server.register(fjwt, {
   secret: config.get<string>("jwtSecret"),
 });
