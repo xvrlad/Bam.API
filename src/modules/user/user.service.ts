@@ -13,3 +13,23 @@ export async function createUser(input: CreateUserInput) {
 
   return user;
 }
+
+export async function findUserByEmail(email: string) {
+  return prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+}
+
+export async function findUsers() {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      firstName: true,
+      lastName: true,
+    },
+  });
+}

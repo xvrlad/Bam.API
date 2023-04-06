@@ -7,7 +7,7 @@ import { userSchemas } from "./modules/user/user.schema";
 
 const port = config.get<number>("port");
 
-const server = Fastify();
+export const server = Fastify();
 
 server.register(fjwt, {
   secret: config.get<string>("jwtSecret"),
@@ -15,7 +15,13 @@ server.register(fjwt, {
 
 server.decorate(
   "authenticate",
-  async (request: FastifyRequest, reply: FastifyReply) => {}
+  async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      await request.jwtVerify();
+    } catch (error) {
+      return reply.send(error);
+    }
+  }
 );
 
 server.get("/healthcheck", async function () {
