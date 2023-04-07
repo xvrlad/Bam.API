@@ -13,19 +13,24 @@ const noteGenerated = {
   modifiedDate: z.string(),
 };
 
-const createNoteSchema = z.object({});
+const createNoteSchema = z.object({
+  ...noteInput,
+});
 
-const createNoteResponseSchema = z.object({});
-
-const noteResponseSchema = z.object({});
+const noteResponseSchema = z.object({
+  ...noteInput,
+  ...noteGenerated,
+});
 
 const notesResponseSchema = z.array(noteResponseSchema);
 
 export type CreateNoteInput = z.infer<typeof createNoteSchema>;
 
-export const {} = buildJsonSchemas({
-  createNoteSchema,
-  createNoteResponseSchema,
-  noteResponseSchema,
-  notesResponseSchema,
-});
+export const { schemas: noteSchemas, $ref } = buildJsonSchemas(
+  {
+    createNoteSchema,
+    noteResponseSchema,
+    notesResponseSchema,
+  },
+  { $id: "Note" }
+);

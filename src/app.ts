@@ -4,6 +4,7 @@ import userRoutes from "./modules/user/user.route";
 import config from "config";
 import logger from "./utils/logger";
 import { userSchemas } from "./modules/user/user.schema";
+import { noteSchemas } from "./modules/note/note.schema";
 
 const port = config.get<number>("port");
 
@@ -35,7 +36,7 @@ server.get("/healthcheck", async function () {
 });
 
 async function main() {
-  for (const schema of userSchemas) {
+  for (const schema of [...userSchemas, ...noteSchemas]) {
     server.addSchema(schema);
   }
 
