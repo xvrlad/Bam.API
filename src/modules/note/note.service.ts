@@ -6,11 +6,12 @@ import { join } from "path";
 import { CreateNoteInput } from "./note.schema";
 
 export async function createNote(input: CreateNoteInput & { userId: string }) {
-  const filename = `${uuidv4()}.json`;
-  const jsonFile = await writeJsonFile(filename, input.content);
+  const filename = uuidv4();
+  //   const jsonFile = await writeJsonFile(filename, input.content);
+
   await supabase.storage
     .from("bam-bucket")
-    .upload(`Notes/${filename}.json`, jsonFile);
+    .upload(`Notes/${filename}.json`, input.content);
 
   const { data } = supabase.storage
     .from("bam-bucket")
@@ -18,7 +19,8 @@ export async function createNote(input: CreateNoteInput & { userId: string }) {
 
   return prisma.note.create({
     data: {
-      ...input,
+      title: input.title,
+      userId: input.userId,
       contentUrl: data.publicUrl,
     },
   });
@@ -28,29 +30,16 @@ export function getNotes() {
   return prisma.note.findMany({
     select: {
       id: true,
+      user: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
       title: true,
       contentUrl: true,
       modifiedDate: true,
       createdDate: true,
     },
   });
-}
-
-async function writeJsonFile(filename: string, data: any) {
-  try {
-    await fsPromises.writeFile(join(__dirname, filename), data, {
-      flag: "w",
-    });
-
-    const contents = await fsPromises.readFile(
-      join(__dirname, filename),
-      "utf-8"
-    );
-    console.log(contents); // 👉️ Tiptap JSON content
-
-    return contents;
-  } catch (err) {
-    console.log(err);
-    return "Something went wrong";
-  }
 }

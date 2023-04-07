@@ -1,6 +1,7 @@
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import fjwt from "@fastify/jwt";
 import userRoutes from "./modules/user/user.route";
+import noteRoutes from "./modules/note/note.route";
 import config from "config";
 import logger from "./utils/logger";
 import { userSchemas } from "./modules/user/user.schema";
@@ -13,6 +14,18 @@ export const server = Fastify();
 declare module "fastify" {
   export interface FastifyInstance {
     authenticate: any;
+  }
+}
+
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    user: {
+      id: string;
+      email: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+    };
   }
 }
 
@@ -41,6 +54,7 @@ async function main() {
   }
 
   server.register(userRoutes, { prefix: "api/users" });
+  server.register(noteRoutes, { prefix: "api/notes" });
 
   try {
     await server.listen({ port: port, host: "0.0.0.0" });
