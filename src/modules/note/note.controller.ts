@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createNote, getNotes } from "./note.service";
+import { createNote, getNote, getNotes } from "./note.service";
 import { CreateNoteInput } from "./note.schema";
 
 export async function createNoteHandler(
@@ -15,8 +15,15 @@ export async function createNoteHandler(
   return note;
 }
 
-export async function getNotesHandler() {
-  const notes = await getNotes();
+export async function getNotesHandler(request: FastifyRequest<{}>) {
+  const notes = await getNotes({ userId: request.user.id });
 
   return notes;
+}
+
+export async function getNoteHandler(request: any) {
+  const { noteId } = request.params;
+  const note = await getNote(noteId);
+
+  return note;
 }

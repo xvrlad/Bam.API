@@ -1,5 +1,9 @@
 import { FastifyInstance } from "fastify";
-import { createNoteHandler, getNotesHandler } from "./note.controller";
+import {
+  createNoteHandler,
+  getNoteHandler,
+  getNotesHandler,
+} from "./note.controller";
 import { $ref } from "./note.schema";
 
 async function noteRoutes(server: FastifyInstance) {
@@ -20,6 +24,7 @@ async function noteRoutes(server: FastifyInstance) {
   server.get(
     "/",
     {
+      preHandler: [server.authenticate],
       schema: {
         response: {
           200: $ref("notesResponseSchema"),
@@ -27,6 +32,19 @@ async function noteRoutes(server: FastifyInstance) {
       },
     },
     getNotesHandler
+  );
+
+  server.get(
+    "/:noteId",
+    {
+      preHandler: [server.authenticate],
+      schema: {
+        response: {
+          200: $ref("noteResponseSchema"),
+        },
+      },
+    },
+    getNoteHandler
   );
 }
 

@@ -25,8 +25,29 @@ export async function createNote(input: CreateNoteInput & { userId: string }) {
   });
 }
 
-export function getNotes() {
+export function getNotes(input: { userId: string }) {
   return prisma.note.findMany({
+    select: {
+      id: true,
+      user: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+      title: true,
+      contentUrl: true,
+      modifiedDate: true,
+      createdDate: true,
+    },
+  });
+}
+
+export function getNote(input: string & { userId: string }) {
+  return prisma.note.findUnique({
+    where: {
+      id: input,
+    },
     select: {
       id: true,
       user: {
