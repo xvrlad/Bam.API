@@ -7,7 +7,7 @@ const noteInput = {
 };
 
 const noteGenerated = {
-  id: z.number(),
+  id: z.string(),
   contentUrl: z.string(),
   createdDate: z.string(),
   modifiedDate: z.string(),
@@ -18,8 +18,11 @@ const createNoteSchema = z.object({
 });
 
 const noteResponseSchema = z.object({
-  ...noteInput,
-  ...noteGenerated,
+  id: noteGenerated.id,
+  title: z.string(),
+  contentUrl: noteGenerated.contentUrl,
+  createdDate: noteGenerated.createdDate,
+  modifiedDate: noteGenerated.modifiedDate,
 });
 
 const notesResponseSchema = z.array(noteResponseSchema);

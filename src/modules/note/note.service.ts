@@ -7,7 +7,6 @@ import { CreateNoteInput } from "./note.schema";
 
 export async function createNote(input: CreateNoteInput & { userId: string }) {
   const filename = uuidv4();
-  //   const jsonFile = await writeJsonFile(filename, input.content);
 
   await supabase.storage
     .from("bam-bucket")
