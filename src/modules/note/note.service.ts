@@ -1,8 +1,6 @@
 import prisma from "../../utils/prisma";
 import supabase from "../../utils/supabase";
 import { v4 as uuidv4 } from "uuid";
-import { promises as fsPromises } from "fs";
-import { join } from "path";
 import { CreateNoteInput } from "./note.schema";
 
 export async function createNote(input: CreateNoteInput & { userId: string }) {
@@ -62,4 +60,13 @@ export function getNote(input: string & { userId: string }) {
       createdDate: true,
     },
   });
+}
+
+export async function deleteNote(input: string & { userId: string }) {
+  await prisma.note.delete({
+    where: {
+      id: input,
+    },
+  });
+  return;
 }

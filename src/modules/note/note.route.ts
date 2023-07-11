@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import {
   createNoteHandler,
+  deleteNoteHandler,
   getNoteHandler,
   getNotesHandler,
 } from "./note.controller";
@@ -45,6 +46,22 @@ async function noteRoutes(server: FastifyInstance) {
       },
     },
     getNoteHandler
+  );
+
+  server.delete(
+    "/:noteId",
+    {
+      preHandler: [server.authenticate],
+      schema: {
+        response: {
+          204: {
+            description: "Deletion success",
+            type: "null",
+          },
+        },
+      },
+    },
+    deleteNoteHandler
   );
 }
 
